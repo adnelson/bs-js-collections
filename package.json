@@ -1,7 +1,7 @@
 {
   "name": "rescript-js-collections",
   "description": "Bindings to JavaScript primitive Set and Map types",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "scripts": {
     "copy-git-hooks": "mkdir -p ./.git/hooks && cp -v ./hooks/* ./.git/hooks",
     "prepare": "yarn copy-git-hooks",
