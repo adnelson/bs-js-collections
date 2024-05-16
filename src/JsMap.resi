@@ -126,6 +126,9 @@ let keepMapWithKey: (t<'k, 'a>, ('k, 'a) => option<'b>) => t<'k, 'b>
 // value is removed; if Some(x), the new value will be x. Immutable.
 let keepMap: (t<'k, 'a>, 'a => option<'b>) => t<'k, 'b>
 
+// If the key exists in the dictionary, set a new value for it with the function. Immutable.
+let update: (t<'k, 'a>, 'k, 'a => 'a) => t<'k, 'a>
+
 // Create a copy of the map
 let copy: t<'k, 'a> => t<'k, 'a>
 
@@ -162,6 +165,17 @@ let toJson: (~k: 'k => string, ~v: 'v => Js.Json.t, t<'k, 'v>) => Js.Json.t
 // Construct a map from all the keys which exist in either input map. If a key
 // appears in both, the value will be whatever is in the *second* map.
 let union: (t<'k, 'a>, t<'k, 'a>) => t<'k, 'a>
+
+// Union an array of maps
+let unionAll: array<t<'k, 'a>> => t<'k, 'a>
+
+// Construct a map from all the keys which exist in either input map. If a key
+// appears in both, the function will be applied to both values. The first argument
+// passed to the function will be that from the first map.
+let unionWith: (t<'k, 'a>, t<'k, 'a>, ('a, 'a) => 'a) => t<'k, 'a>
+
+// Like unionWith but works on an array of maps
+let unionAllWith: (array<t<'k, 'a>>, ('a, 'a) => 'a) => t<'k, 'a>
 
 // Construct a map from all the keys which exist in both input maps. The value
 // will be whatever's in the *second* map.

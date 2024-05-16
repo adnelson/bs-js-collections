@@ -60,6 +60,8 @@ let keepMap = (s, f) => {
 
 let union = (set1, set2) => set2->reduce(set1->reduce(empty(), addMut), addMut)
 
+let unionAll = sets => sets->Js.Array2.reduce(union, empty())
+
 let intersection = (set1, set2) => set1->keep(set2->has)
 
 let diff = (set1, set2) => set1->keep(e => !(set2->has(e)))

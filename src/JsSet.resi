@@ -78,6 +78,9 @@ let copy: t<'a> => t<'a>
 // Construct a set with elements that exist in either input set.
 let union: (t<'a>, t<'a>) => t<'a>
 
+// Take the union of any number of sets.
+let unionAll: array<t<'a>> => t<'a>
+
 // Construct a set with elements that exist in both input sets.
 let intersection: (t<'a>, t<'a>) => t<'a>
 
