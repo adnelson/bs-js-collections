@@ -27,13 +27,13 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "bs-platform": "^7 || ^8 || ^9"
+    "rescript": "^11"
   },
   "devDependencies": {
-    "bs-platform": "^9",
     "jest": "^26.4.2",
     "lint-staged": "^10.2.11",
     "prettier": "^2.1.0",
-    "reason-jest": "^2.2.0"
+    "reason-jest": "^3.0.0",
+    "rescript": "^11"
   }
 }

@@ -14,22 +14,22 @@ external toArrayLike: t<'a> => Js.Array.array_like<'a> = "%identity"
 
 let toList: t<'a> => list<'a> = s => s->toArray->Belt.List.fromArray
 
-@bs.send external has: (t<'a>, 'a) => bool = "has"
+@send external has: (t<'a>, 'a) => bool = "has"
 
 @get external size: t<'a> => int = "size"
 
-@bs.send external addMut: (t<'a>, 'a) => t<'a> = "add"
+@send external addMut: (t<'a>, 'a) => t<'a> = "add"
 
 let addPure = (s, v) => s->copy->addMut(v)
 
-@bs.send external deleteMut: (t<'a>, 'a) => bool = "delete"
+@send external deleteMut: (t<'a>, 'a) => bool = "delete"
 
 let deletePure = (s, v) => s->toArray->Belt.Array.keep(x => x != v)->fromArray
 
-@bs.send
-external forEach: (t<'a>, @uncurry ('a => unit)) => unit = "forEach"
+@send
+external forEach: (t<'a>, @uncurry 'a => unit) => unit = "forEach"
 
-let reduce = (set, start, f) => set->toArray->Belt.Array.reduce(start, f)
+let reduce = (set, start, f) => set->toArray->Belt.Array.reduce(start, (a, b) => f(a, b))
 
 let map = (s, f) => {
   let output = empty()
@@ -60,7 +60,7 @@ let keepMap = (s, f) => {
 
 let union = (set1, set2) => set2->reduce(set1->reduce(empty(), addMut), addMut)
 
-let intersection = (set1, set2) => set1->keep(set2->has)
+let intersection = (set1, set2) => set1->keep(item => set2->has(item))
 
 let diff = (set1, set2) => set1->keep(e => !(set2->has(e)))
 
@@ -74,10 +74,10 @@ let fromIntBeltSet = set => fromArray(Belt.Set.Int.toArray(set))
 
 let toIntBeltSet = set => Belt.Set.Int.fromArray(toArray(set))
 
-let toJson = (toJsonInner, set) => set->toArray->Belt.Array.map(toJsonInner)->Js.Json.array
+let toJson = (toJsonInner, set) => set->toArray->Belt.Array.map(x => toJsonInner(x))->Js.Json.array
 
 let dedupeArray = arr => arr->fromArray->toArray
 
-let mapToArray = (set, f) => set->toArray->Belt.Array.map(f)
+let mapToArray = (set, f) => set->toArray->Belt.Array.map(x => f(x))
 
-let mapToList = (set, f) => set->toList->Belt.List.map(f)
+let mapToList = (set, f) => set->toList->Belt.List.map(x => f(x))

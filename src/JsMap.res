@@ -9,7 +9,7 @@ let fromList = l => l->Belt.List.toArray->fromArray
 @new
 external fromArrayLike: Js.Array.array_like<('k, 'v)> => t<'k, 'v> = "Map"
 
-@bs.send
+@send
 external entries: t<'k, 'a> => Js.Array.array_like<('k, 'a)> = "entries"
 
 @val
@@ -21,36 +21,36 @@ let entriesList = m => m->entriesArray->Belt.List.fromArray
 let toArray = entriesArray
 let toList = entriesList
 
-@bs.send external keys: t<'k, 'a> => Js.Array.array_like<'k> = "keys"
+@send external keys: t<'k, 'a> => Js.Array.array_like<'k> = "keys"
 let keysArray = m => m->keys->Js.Array.from
 let keysList = m => m->keysArray->Belt.List.fromArray
 
-@bs.send external values: t<'k, 'a> => Js.Array.array_like<'a> = "values"
+@send external values: t<'k, 'a> => Js.Array.array_like<'a> = "values"
 let valuesArray = m => m->values->Js.Array.from
 let valuesList = m => m->valuesArray->Belt.List.fromArray
 
-@bs.send external has: (t<'k, 'v>, 'k) => bool = "has"
+@send external has: (t<'k, 'v>, 'k) => bool = "has"
 
-@bs.send @return(nullable)
+@send @return(nullable)
 external get: (t<'k, 'v>, 'k) => option<'v> = "get"
 
 @get external size: t<'k, 'a> => int = "size"
 
-@bs.send external setMut: (t<'k, 'v>, 'k, 'v) => t<'k, 'v> = "set"
+@send external setMut: (t<'k, 'v>, 'k, 'v) => t<'k, 'v> = "set"
 
-@bs.send external deleteMut: (t<'k, 'v>, 'k) => bool = "delete"
+@send external deleteMut: (t<'k, 'v>, 'k) => bool = "delete"
 
-@bs.send
-external forEach: (t<'k, 'v>, @uncurry ('v => unit)) => unit = "forEach"
+@send
+external forEach: (t<'k, 'v>, @uncurry 'v => unit) => unit = "forEach"
 
 // This binding is only used internally (`forEachWithKey` is exported)
-@bs.send
+@send
 external forEachValueKey: (t<'k, 'v>, @uncurry ('v, 'k) => unit) => unit = "forEach"
 
 let forEachWithKey = (map, f) => map->forEachValueKey((v, k) => f(k, v))
 
 // Reduce over the values in the map (ignoring keys).
-let reduce = (map, start, f) => map->valuesArray->Belt.Array.reduce(start, f)
+let reduce = (map, start, f) => map->valuesArray->Belt.Array.reduce(start, (a, b) => f(a, b))
 
 // Reduce over keys and values in the map.
 let reduceWithKey = (map, start, f) =>
@@ -165,7 +165,7 @@ let union = (map1, map2) =>
     m->setMut(k, v)
   )
 
-let intersection = (map1, map2) => map1->keepKeys(map2->has)
+let intersection = (map1, map2) => map1->keepKeys(x => map2->has(x))
 
 let diff = (map1, map2) => map1->keepKeys(e => !(map2->has(e)))
 

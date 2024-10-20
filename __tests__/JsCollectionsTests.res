@@ -117,7 +117,11 @@ module MapTests = {
 
     test("toJson", () =>
       expect(
-        fromArray([("a", 1.0), ("b", 2.0), ("c", 3.0)]) |> toJson(~k=s => s, ~v=Js.Json.number),
+        toJson(
+          ~k=s => s,
+          ~v=n => Js.Json.number(n),
+          fromArray([("a", 1.0), ("b", 2.0), ("c", 3.0)]),
+        ),
       )->toEqual(%raw(`{a: 1, b: 2, c: 3}`))
     )
   })
@@ -198,7 +202,7 @@ module SetTests = {
 
     test("mapping a function over a Set", () => {
       let set1 = fromArray([1.0, 2.0, 3.0])
-      expect(set1 |> toJson(Js.Json.number))->toEqual(Obj.magic([1.0, 2.0, 3.0]))
+      expect(toJson(n => Js.Json.number(n), set1))->toEqual(Obj.magic([1.0, 2.0, 3.0]))
       expect(set1->mapToArray(i => [i]))->toEqual([[1.0], [2.0], [3.0]])
       expect(set1->mapToList(i => [i]))->toEqual(list{[1.0], [2.0], [3.0]})
     })
