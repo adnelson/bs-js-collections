@@ -1,6 +1,6 @@
 {
   "name": "rescript-js-collections",
-  "version": "1.8.21",
+  "version": "2.0.0",
   "sources": [
     {
       "dir": "src",
