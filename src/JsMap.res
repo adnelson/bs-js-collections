@@ -114,6 +114,14 @@ let copy = m => m->toArray->fromArray
 
 let setPure = (m, k, v) => m->copy->setMut(k, v)
 
+let update = (m, k, f) =>
+  switch m->get(k) {
+  | Some(v) => m->setPure(k, f(v))
+  | None => m
+  }
+
+let updateOrSet = (m, k, f) => m->setPure(k, m->get(k)->f)
+
 let deletePure = (m, toRemove) =>
   m->entriesArray->Belt.Array.keep(((k, _)) => k != toRemove)->fromArray
 
@@ -160,10 +168,22 @@ let toIntBeltMap = m => Belt.Map.Int.fromArray(toArray(m))
 // mixing with encoders in `@glennsl/bs-json` (although it works standalone)
 let toJson = (~k, ~v, m) => m->mapEntries((k', v') => (k(k'), v(v')))->toDict->Js.Json.object_
 
-let union = (map1, map2) =>
-  map2->reduceWithKey(map1->reduceWithKey(empty(), (m, k, v) => m->setMut(k, v)), (m, k, v) =>
-    m->setMut(k, v)
+let union = (map1, map2) => map2->reduceWithKey(map1->copy, (m, k, v) => m->setMut(k, v))
+
+let unionAll = maps => maps->Js.Array2.reduce(union, empty())
+
+let unionWith = (map1, map2, f) =>
+  map2->reduceWithKey(map1->copy, (m, k, v) =>
+    m->setMut(
+      k,
+      switch m->get(k) {
+      | None => v
+      | Some(v1) => f(v1, v)
+      },
+    )
   )
+
+let unionAllWith = (maps, f) => maps->Js.Array2.reduce((m1, m2) => unionWith(m1, m2, f), empty())
 
 let intersection = (map1, map2) => map1->keepKeys(x => map2->has(x))
 

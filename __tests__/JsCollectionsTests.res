@@ -56,6 +56,11 @@ module MapTests = {
       ])
     })
 
+    test("updating a key with a function", () => {
+      let map1 = fromArray([(1, 10), (2, 20), (3, 30)])
+      expect(map1->update(2, x => x * 12)->valuesArray)->toEqual([10, 240, 30])
+    })
+
     test("reducing", () => {
       let map = fromArray([(123, "bar"), (456, "baz"), (789, "qux")])
 
@@ -79,7 +84,16 @@ module MapTests = {
       expect(map1->diff(map2))->toEqual(map1)
       expect(map2->diff(map3))->toEqual(singleton(6, 60))
       expect(map1->union(map2)->keysArray)->toEqual([1, 2, 3, 4, 5, 6])
+      expect(unionAll([map1, map2, map3]))->toEqual(
+        fromArray([(1, 10), (2, 20), (3, 30), (4, 40), (5, 50), (6, 60)]),
+      )
+      expect(unionAllWith([map1, map2, map3], (x, y) => x + y))->toEqual(
+        fromArray([(1, 10), (2, 20), (3, 60), (4, 80), (5, 100), (6, 60)]),
+      )
       expect(map1->union(map3))->toEqual(fromArray([(1, 10), (2, 20), (3, 30), (4, 40), (5, 50)]))
+      expect(map1->unionWith(map3, (x, y) => x * y))->toEqual(
+        fromArray([(1, 10), (2, 20), (3, 900), (4, 40), (5, 50)]),
+      )
       expect(map2->intersection(map3))->toEqual(fromArray([(4, 40), (5, 50)]))
     })
 
@@ -197,6 +211,7 @@ module SetTests = {
       expect(set2->diff(set3))->toEqual(singleton(6))
       expect(set1->union(set2))->toEqual(fromArray([1, 2, 3, 4, 5, 6]))
       expect(set1->union(set3))->toEqual(fromArray([1, 2, 3, 4, 5]))
+      expect(unionAll([set1, set2, set3]))->toEqual(fromArray([1, 2, 3, 4, 5, 6]))
       expect(set2->intersection(set3))->toEqual(fromArray([4, 5]))
     })
 
