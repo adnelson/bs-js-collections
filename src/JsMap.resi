@@ -129,6 +129,10 @@ let keepMap: (t<'k, 'a>, 'a => option<'b>) => t<'k, 'b>
 // If the key exists in the dictionary, set a new value for it with the function. Immutable.
 let update: (t<'k, 'a>, 'k, 'a => 'a) => t<'k, 'a>
 
+// Same as `update` but the update function can see if the key is already
+// present (Some) or not (None). The resulting map will always contain the key.
+let updateOrSet: (t<'k, 'a>, 'k, option<'a> => 'a) => t<'k, 'a>
+
 // Create a copy of the map
 let copy: t<'k, 'a> => t<'k, 'a>
 

@@ -120,6 +120,8 @@ let update = (m, k, f) =>
   | None => m
   }
 
+let updateOrSet = (m, k, f) => m->setPure(k, m->get(k)->f)
+
 let deletePure = (m, toRemove) =>
   m->entriesArray->Belt.Array.keep(((k, _)) => k != toRemove)->fromArray
 
